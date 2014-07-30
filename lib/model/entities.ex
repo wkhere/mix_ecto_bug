@@ -1,24 +1,3 @@
-defmodule User do
-  use Ecto.Model
-  @type t :: %__MODULE__{}
-
-  schema "users" do
-    has_many :subscriptions, Subscription
-    field :name,  :string
-    field :email, :string
-  end
-
-  @spec valid_subscription(t, Util.fuzzy_date) :: Subscription.t
-  def valid_subscription(self, for_day) do
-    for_day = Util.to_date for_day
-    subs = Repo.all(from s in Subscription, where: s.user_id == ^self.id and
-      s.started_on_day <= ^for_day and ^for_day <= s.expire_on_day)
-    # sanity:
-    if Enum.count(subs) > 1, do: raise "Too many subscriptions: #{inspect subs}"
-    List.first subs
-  end
-end
-
 defmodule Subscription do
   use Ecto.Model
   @type t :: %__MODULE__{}
