@@ -12,6 +12,22 @@ defmodule Subscription do
   end
 end
 
+defmodule PayMatch do
+  use Ecto.Model
+  @type t :: %__MODULE__{}
+
+  schema "payment_match", primary_key: false do
+    belongs_to :subscription, Subscription
+    belongs_to :payment,      Payment
+    field :match_type,        :string
+    field :new_subscription,  :boolean
+    field :needs_email,       :boolean
+    field :for_day,           :date
+    field :created_at,        :datetime
+    field :updated_at,        :datetime
+  end
+end
+
 defmodule Payment do
   use Ecto.Model
   @type t :: %__MODULE__{}
@@ -34,21 +50,5 @@ defmodule Payment do
     Repo.all(from pm in PayMatch, where: pm.payment_id == ^self.id,
       #                 ^^^HERE BE DRAGONS
       join: s in pm.subscription, select: s)
-  end
-end
-
-defmodule PayMatch do
-  use Ecto.Model
-  @type t :: %__MODULE__{}
-
-  schema "payment_match", primary_key: false do
-    belongs_to :subscription, Subscription
-    belongs_to :payment,      Payment
-    field :match_type,        :string
-    field :new_subscription,  :boolean
-    field :needs_email,       :boolean
-    field :for_day,           :date
-    field :created_at,        :datetime
-    field :updated_at,        :datetime
   end
 end
