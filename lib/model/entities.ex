@@ -32,6 +32,7 @@ defmodule Payment do
   @spec subscriptions(t) :: [Subscription.t]
   def subscriptions(self) do
     Repo.all(from pm in PayMatch, where: pm.payment_id == ^self.id,
+      #                 ^^^HERE BE DRAGONS
       join: s in pm.subscription, select: s)
   end
 end
